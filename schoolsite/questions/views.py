@@ -1,6 +1,6 @@
 from django.http import JsonResponse
-from .models import Question
-from .serializers import QuestionSerializer
+from .models import Question,Reply
+from .serializers import QuestionSerializer,ReplySerializer
 from django.shortcuts import render 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -15,12 +15,14 @@ def questions(request):
       question = Question.objects.all()
       serializer = QuestionSerializer(question,many = True)
       return Response(serializer.data)
+    
       
     if request.method == 'POST':
         serializer = QuestionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status = status.HTTP_201_CREATED)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
         
 @api_view(['GET','PUT','DELETE'])        
 def questions_specific(request,id):
@@ -42,3 +44,17 @@ def questions_specific(request,id):
     elif request.method == 'DELETE':
         question.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
+    
+    
+@api_view(['POST'])    
+def add_reply(request,question_id):
+    try:
+        question = Question.objects.get(pk=question_id)
+    except Question.DoesNotExist:
+        return Response(status = status.HTTP_404_NOT_FOUND)
+    if request.method == 'POST':
+        serializer = ReplySerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save(question = question)
+            return Response(serializer.data,status = status.HTTP_201_CREATED)
+        return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
