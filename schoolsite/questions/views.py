@@ -34,8 +34,8 @@ def questions_specific(request,id):
        serializer = QuestionSerializer(question)
        return Response(serializer.data)
     elif request.method == 'PUT':
-        serializer = QuestionSerializer(questions,data = request.data)
-        if serializer.isvalid():
+        serializer = QuestionSerializer(question,data = request.data)
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
