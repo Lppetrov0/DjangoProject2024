@@ -16,6 +16,8 @@ class Question(models.Model):
 class Reply(models.Model):
     #user=
     question = models.ForeignKey(Question,related_name="replies",on_delete=models.CASCADE)
-    content =  models.TextField(null=False)
+    content =  models.TextField(null=False,blank=False)
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return f"Reply to '{self.question.title}'"
