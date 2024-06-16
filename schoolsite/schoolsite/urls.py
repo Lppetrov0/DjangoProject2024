@@ -24,6 +24,6 @@ urlpatterns = [
     path('questions/',views.questions,name = 'quesions-page'),
     path('questions/<int:id>/',views.questions_specific,name = 'quesionsdetail-page'),
     path('questions/<int:question_id>/replies',views.add_reply,name = 'add-reply'),
-    path('questions/<int:question_id>/replies/<int:replies_id>',
+    path('questions/<int:question_id>/replies/<int:reply_id>/',views.reply_specific,name = 'replydetail-page')
     
 ]
