@@ -1,23 +1,28 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 
+
+
 class Question(models.Model):
-    #user =
+    #user = 
     title = models.CharField(max_length=200)
     content = models.TextField(blank=True,null = True)
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
     def __str__(self):
-        return self.title + ' ' + self.content
+        return f"{self.title} by {self.user.username}"
+    
+
     
     
 class Reply(models.Model):
-    #user=
+    #user = 
     question = models.ForeignKey(Question,related_name="replies",on_delete=models.CASCADE)
     content =  models.TextField(null=False,blank=False)
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
-        return f"Reply to '{self.question.title}'"
+        return f"Reply to '{self.question.title}' by {self.user.username}"

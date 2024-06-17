@@ -20,6 +20,10 @@ from questions import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('register/', views.register, name='register'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
+    path('profile/', views.user_profile, name='profile'),
     path('',views.mainpage,name = 'main-page'),
     path('questions/',views.questions,name = 'quesions-page'),
     path('questions/<int:id>/',views.questions_specific,name = 'quesionsdetail-page'),
