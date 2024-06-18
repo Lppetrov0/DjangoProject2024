@@ -25,9 +25,9 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.edit_profile_view, name='profile'),
     path('',views.mainpage,name = 'main-page'),
-    path('questions/',views.questions,name = 'quesions-page'),
-    path('questions/<int:id>/',views.questions_specific,name = 'quesionsdetail-page'),
+    path('questions/',views.questions,name = 'questions-page'),
+    path('questions/<int:id>/',views.questions_specific,name = 'questionsdetail-page'),
     path('questions/<int:question_id>/replies',views.add_reply,name = 'add-reply'),
-    path('questions/<int:question_id>/replies/<int:reply_id>/',views.reply_specific,name = 'replydetail-page')
+    path('questions/<int:question_id>/replies/<int:reply_id>/',views.reply_specific,name = 'repliesdetail-page')
     
 ]

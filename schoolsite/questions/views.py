@@ -54,13 +54,13 @@ def login_view(request):
 
 
 @api_view(['POST'])
-@login_required
+@login_required(login_url='/login')
 def logout_view(request):
     logout(request)
     return Response({'message': 'Successfully logged out.'})
 
 @api_view(['PUT'])
-@login_required
+@login_required(login_url='/login')
 def edit_profile_view(request):
     if not request.user.is_authenticated:
         return Response({'message': 'Authentication credentials were not provided.'}, status=status.HTTP_403_FORBIDDEN)
@@ -72,7 +72,6 @@ def edit_profile_view(request):
 
 
 @api_view(['GET','POST'])
-@login_required
 def questions(request):
     if request.method == 'GET':
       question = Question.objects.all()
@@ -88,7 +87,7 @@ def questions(request):
         return Response(status = status.HTTP_400_BAD_REQUEST)
         
 @api_view(['GET','PUT','PATCH','DELETE'])
-@login_required     
+ 
 def questions_specific(request,id):
     try:
         question = Question.objects.get(pk=id)
@@ -118,7 +117,6 @@ def questions_specific(request,id):
     
     
 @api_view(['POST'])    
-@login_required
 def add_reply(request,question_id):
     try:
         question = Question.objects.get(pk=question_id)
@@ -133,7 +131,6 @@ def add_reply(request,question_id):
     
     
 @api_view(['GET','PUT','PATCH','DELETE'])
-@login_required
 def reply_specific(request,question_id,reply_id):
     try: 
         reply = Reply.objects.get(pk = reply_id)
