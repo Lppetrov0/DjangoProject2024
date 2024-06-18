@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from .models import Question,Reply,User
+from rest_framework.authentication import authenticate
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -22,6 +25,25 @@ class RegisterSerializer(serializers.ModelSerializer):
             bio=validated_data.get('bio', '')
         )
         return user
+    
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True)
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def validate(self, data):
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+
+        if not username or not email or not password:
+            raise serializers.ValidationError('Both username, email, and password are required.')
+
+        return data
 
 class EditProfileSerializer(serializers.ModelSerializer):
     class Meta:
