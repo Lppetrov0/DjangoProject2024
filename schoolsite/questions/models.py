@@ -9,6 +9,16 @@ class User(AbstractUser):
     password = models.CharField(max_length=200)
     bio = models.TextField(max_length=2000,blank=True,null=True)
     
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='custom_user_set',  # Avoid conflicts with auth.User
+        blank=True
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='custom_user_set',  # Avoid conflicts with auth.User
+        blank=True
+    )
     
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email","password"]
@@ -18,10 +28,10 @@ class User(AbstractUser):
 
 
 class Question(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='questions') 
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='questions',default=1) 
     title = models.CharField(max_length=200)
     content = models.TextField(blank=True,null = True)
-    attachment = models.FileField(upload_to='attachemnts/',null=True,blank=True)
+    attachment = models.FileField(upload_to='attachments/',null=True,blank=True)
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
     def __str__(self):
@@ -31,7 +41,7 @@ class Question(models.Model):
     
     
 class Reply(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='replies')
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='replies',default=1)
     question = models.ForeignKey(Question,related_name="replies",on_delete=models.CASCADE)
     content =  models.TextField(null=False,blank=False)
     attachment = models.FileField(upload_to='attachemnts/',null=True,blank=True)

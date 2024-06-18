@@ -16,45 +16,43 @@ def mainpage(request):
 
 @api_view(['POST'])
 def register(request):
-  serializer = UserRegistrationSerializer(data = request.data)
-  if serializer.is_valid():
-      serializer.save()
-      return Response(serializer.data,status = status.HTTP_201_CREATED)
-  return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
+    print(request.data)
+    serializer = RegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
 @api_view(['POST'])
-def user_login(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
-    user = authenticate(request,username=username,password=password)
+def login_view(request):
+    data = request.data
+    username = data.get('username')
+    password = data.get('password')
+    user = authenticate(request, username=username, password=password)
     if user is not None:
-        login(request,user)
-        return Response({'message':'login successful'},status = status.HTTP_200_OK)
-    return Response({'message':'login failed'},status = status.HTTP_400_BAD_REQUEST)
+        login(request, user)
+        return Response({'detail': 'Successfully logged in.'})
+    return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
-def user_logout(request):
+def logout_view(request):
     logout(request)
-    return Response({'message':'logout successful'},status = status.HTTP_200_OK)
+    return Response({'detail': 'Successfully logged out.'})
 
-@api_view(['GET','POST'])
-def user_profile(request):
-    if request.method == 'GET':
-        serializer = CustomUserSerializer(request.user)
+@api_view(['PUT'])
+def edit_profile_view(request):
+    if not request.user.is_authenticated:
+        return Response({'detail': 'Authentication credentials were not provided.'}, status=status.HTTP_403_FORBIDDEN)
+    serializer = EditProfileSerializer(request.user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
         return Response(serializer.data)
-    elif request.method in ['PUT','PATCH']:
-        partial = request.method == 'PATCH'
-        serializer = CustomUserSerializer(request.user,data=request.data,partial=partial)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        request.user.delete()
-        return Response({"message": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET','POST'])
